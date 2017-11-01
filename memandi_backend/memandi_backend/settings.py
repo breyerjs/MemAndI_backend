@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'memandi.apps.MemandiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -99,6 +100,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Overrides Default User Model
+AUTH_USER_MODEL = 'memandi.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/

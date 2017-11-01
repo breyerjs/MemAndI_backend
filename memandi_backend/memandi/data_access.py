@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 class Data_Access:
     def __init__(self):
         pass
 
     def create_user(self, username, first_name, last_name, email, password):
-        # todo
         User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
 
     def get_user_by_email_or_username(self, **kwargs):
@@ -19,4 +19,4 @@ class Data_Access:
         elif email is not None and username is None:
             return User.objects.filter(email=email)
         else:
-            return User.objects.filter(email=email | username=username)
+            return User.objects.filter(Q(email=email) | Q(username=username))

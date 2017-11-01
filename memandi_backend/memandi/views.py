@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from logic import Logic
+from .logic import Logic
 
 def index(request):
     return HttpResponse("Hello, world. You're at the memandi index.")
@@ -12,7 +12,7 @@ def create_user(request):
         if field not in body:
             return create_missing_argument_400_response(field)
     # No need to check credentials since they haven't made any yet.
-    logic = Logic().create_user(username, first_name, last_name, email, password)
+    result = Logic().create_user(username, first_name, last_name, email, password)
 
 
 """

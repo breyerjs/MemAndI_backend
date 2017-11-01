@@ -1,4 +1,4 @@
-from Data_Access import Data_Access
+from .data_access import Data_Access
 
 class Logic:
     def __init__(self):
@@ -9,7 +9,8 @@ class Logic:
         existing_user = data_access.get_user_by_email_or_username(email=email, username=username)
         if len(existing_user) > 0:
             return create_400_response("User already exists")
-        return Data_Access().create_user(username, first_name, last_name, email, password)
+        result = Data_Access().create_user(username, first_name, last_name, email, password)
+        return result
 
     def create_400_response(error):
         context = {
