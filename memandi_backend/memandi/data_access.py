@@ -6,7 +6,13 @@ class Data_Access:
         pass
 
     def create_user(self, username, first_name, last_name, email, password):
-        User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        new_user = User.objects.create(
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password)
+        return new_user
 
     def get_user_by_email_or_username(self, **kwargs):
         username = kwargs["username"]
