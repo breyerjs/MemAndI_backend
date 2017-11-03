@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.http import HttpResponse
 from .logic import Logic
@@ -12,7 +13,13 @@ def create_user(request):
         if field not in body:
             return create_400_response("Missing required field: " + field)
     # No need to check credentials since they haven't made any yet.
-    error = Logic().create_user(username, first_name, last_name, email, password)
+
+    error = Logic().create_user(
+        body["username"],
+        body["first_name"],
+        body["last_name"],
+        body["email"],
+        body["password"])
     if error is not None:
         return create_400_response(error)
     return HttpResponse(status=204)

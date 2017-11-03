@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from .models import User
 from django.db.models import Q
 
 class Data_Access:
