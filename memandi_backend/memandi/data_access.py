@@ -5,14 +5,8 @@ class Data_Access:
     def __init__(self):
         pass
 
-    def create_user(self, username, first_name, last_name, email, password):
-        new_user = User.objects.create(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password)
-        return new_user
+    def create_user(self, user_serializer):
+        user_serializer.save()
 
     def get_user_by_email_or_username(self, **kwargs):
         username = kwargs["username"]
@@ -26,3 +20,6 @@ class Data_Access:
             return User.objects.filter(email=email)
         else:
             return User.objects.filter(Q(email=email) | Q(username=username))
+
+    def create_memory(self, user_serializer):
+        user_serializer.save()

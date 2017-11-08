@@ -1,40 +1,36 @@
-import json
-from django.shortcuts import render
 from django.http import HttpResponse
+
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from .logic import Logic
+from .serializers import UserSerializer, MemorySerializer
+
 
 def index(request):
     return HttpResponse("Hello, world. You're at the memandi index.")
 
+@api_view(['POST'])
 def create_user(request):
-    body = get_request_body(request)
-    expected_fields = ["username", "first_name", "last_name", "email", "password"]
-    for field in expected_fields:
-        if field not in body:
-            return create_400_response("Missing required field: " + field)
-    # No need to check credentials since they haven't made any yet.
+    if request.method == 'POST':
+        user_serializer = UserSerializer(data=request.data)
+        if user_serializer.is_valid():
+            errors = Logic().create_user(user_serializer)
+        if errors is None:
+            return Response(user_serializer.validated_data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(errors, status=400)
 
-    error = Logic().create_user(
-        body["username"],
-        body["first_name"],
-        body["last_name"],
-        body["email"],
-        body["password"])
-    if error is not None:
-        return create_400_response(error)
-    return HttpResponse(status=204)
-"""
-    Helpers
-"""
-
-def get_request_body(request):
-    body_unicode = request.body.decode('utf-8')
-    return json.loads(body_unicode)
-
-def create_400_response(error):
-    context = {
-        'status': '400', 'error': error
-    }
-    response = HttpResponse(json.dumps(context), content_type='application/json')
-    response.status_code = 400
-    return response
+@api_view(['POST'])
+def create_memory(request, user_id):
+    if request.method == 'POST':
+        data = request.data
+        serializer = MemorySerializer(data=data)
+        if serializer.is_valid():
+            errors = Logic().create_memory(serializer)
+            if errors is None:
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(errors, status=400)
+        return Response(status=400)
