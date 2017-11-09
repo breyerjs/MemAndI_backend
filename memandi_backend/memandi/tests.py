@@ -32,9 +32,15 @@ class TestMemories(TestCase):
 
     def test_can_add_one_memory(self):
         response = test_helper.create_memory(self.user.id)
+        memory_added = [m for m in Memory.objects.filter(text=test_helper.memory_information['text'])]
+
+        self.assertEquals(len(memory_added), 1)
         self.assertEquals(response.status_code, 201)
 
     def test_can_add_two_memories(self):
         response1 = test_helper.create_memory(self.user.id)
         response2 = test_helper.create_memory(self.user.id)
+        memories_added = [m for m in Memory.objects.filter(text=test_helper.memory_information['text'])]
+
+        self.assertEquals(len(memories_added), 2)
         self.assertEquals(response2.status_code, 201)

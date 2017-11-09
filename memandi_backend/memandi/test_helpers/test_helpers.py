@@ -1,5 +1,6 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
+from rest_framework.authtoken.models import Token
 from memandi.models import User, Memory
 from django.urls import reverse
 from datetime import datetime
@@ -7,11 +8,12 @@ from datetime import datetime
 class TestHelper:
     def __init__(self):
         self.create_user_route = reverse('user')
+        self.get_auth_token_route = reverse('get_auth_token')
 
         self.user_information = {
             'username': 'alobar',
-            'email': 'panpanpan',
-            'password': 'jitterbug@perfume.com',
+            'email': 'jitterbug@perfume.com',
+            'password': 'panpanpan',
             'first_name': 'Alobar',
             'last_name': 'Pan'
         }
@@ -26,8 +28,18 @@ class TestHelper:
     def create_user(self):
         return APIClient().post(self.create_user_route, data=self.user_information, format='json')
 
+    # note: posting {username:username, password:password}
+    # to the auth route should return the token, too
+    # this can be sent like: http GET 127.0.0.1:8000/route 'Authorization: Token <token_value>'
+    def get_authenticated_client(self, username='alobar'):
+        token = Token.objects.get(user__username=username)
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        return client
+
     def create_memory(self, user_id):
         self.memory_route = reverse('create_memory', kwargs={'user_id': user_id})
         body = self.memory_information
         body['user'] = user_id
-        return APIClient().post(self.memory_route, data=body, format='json')
+        client = self.get_authenticated_client()
+        return client.post(self.memory_route, data=body, format='json')

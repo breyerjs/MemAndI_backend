@@ -24,3 +24,5 @@ class MemorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Memory
         fields = ('id', 'text', 'pub_date', 'starred', 'user')
+        # for auth
+        owner = serializers.ReadOnlyField(source='user.username')
