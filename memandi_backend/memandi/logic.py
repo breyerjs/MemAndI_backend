@@ -18,3 +18,6 @@ class Logic:
     def create_memory(self, memory_serializer):
         Data_Access().create_memory(memory_serializer)
         return None
+
+    def get_all_memories(self, user_id):
+        return Data_Access().get_all_memories(user_id)

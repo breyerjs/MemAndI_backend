@@ -7,10 +7,18 @@ from datetime import datetime
 
 class TestHelper:
     def __init__(self):
-        self.create_user_route = reverse('user')
+        self.create_user_route = reverse('user_create_list')
         self.get_auth_token_route = reverse('get_auth_token')
 
         self.user_information = {
+            'username': 'alobar',
+            'email': 'jitterbug@perfume.com',
+            'password': 'panpanpan',
+            'first_name': 'Alobar',
+            'last_name': 'Pan'
+        }
+
+        self.second_user_information = {
             'username': 'alobar',
             'email': 'jitterbug@perfume.com',
             'password': 'panpanpan',
@@ -25,8 +33,10 @@ class TestHelper:
             'user': None # added during usage
         }
 
-    def create_user(self):
-        return APIClient().post(self.create_user_route, data=self.user_information, format='json')
+    def create_user(self, data=None):
+        if data is None:
+            data = self.user_information
+        return APIClient().post(self.create_user_route, data=data, format='json')
 
     # note: posting {username:username, password:password}
     # to the auth route should return the token, too
@@ -38,8 +48,13 @@ class TestHelper:
         return client
 
     def create_memory(self, user_id):
-        self.memory_route = reverse('create_memory', kwargs={'user_id': user_id})
+        memory_route = reverse('memory_create_list', kwargs={'user_id': user_id})
         body = self.memory_information
         body['user'] = user_id
         client = self.get_authenticated_client()
-        return client.post(self.memory_route, data=body, format='json')
+        return client.post(memory_route, data=body, format='json')
+
+    def get_all_memories(self, user_id):
+        memory_route = reverse('memory_create_list', kwargs={'user_id': user_id})
+        client = self.get_authenticated_client()
+        return client.get(memory_route)

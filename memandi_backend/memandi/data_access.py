@@ -1,4 +1,5 @@
-from .models import User
+from .models import User, Memory
+from .serializers import MemorySerializer
 from django.db.models import Q
 
 class Data_Access:
@@ -23,3 +24,7 @@ class Data_Access:
 
     def create_memory(self, user_serializer):
         user_serializer.save()
+
+    def get_all_memories(self, user_id):
+        memories = Memory.objects.filter(user=user_id)
+        return MemorySerializer(memories, many=True).data
