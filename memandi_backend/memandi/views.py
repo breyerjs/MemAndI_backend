@@ -1,20 +1,16 @@
 from django.http import HttpResponse
 
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.views import APIView
-from rest_framework import permissions
-from rest_framework import generics
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 
 from .logic import Logic
 from .serializers import UserSerializer, MemorySerializer
-from .models import Memory
-from .permissions import IsOwner
 
 """
 Default permissions: permissions.IsOwner + IsAuthenticated
     Note: user_id from the route is authorized, no others are.
+    Do not send 'user' in the body of requests
 """
 
 class UserList(APIView):
@@ -30,11 +26,7 @@ class UserList(APIView):
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(user_serializer.validated_data, status=status.HTTP_201_CREATED)
 
-class MemoryList(generics.GenericAPIView):
-    #TODO this isn't checking the user vs the requested memories
-
-    queryset = Memory.objects.all()
-    serializer_class = MemorySerializer
+class MemoryList(APIView):
 
     def post(self, request, user_id, format='json'):
         data = _get_request_data_and_add_user_from_route(request)
