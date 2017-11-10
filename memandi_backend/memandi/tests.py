@@ -60,10 +60,21 @@ class TestMemories(TestCase):
         self.assertEquals(len(memories.data), 1)
         self.assertEquals(memories.data[0]['text'], test_helper.memory_information['text'])
 
+    def test_unauthenticated_user_gets_401(self):
+        test_helper.create_user(test_helper.user_information)
+        user = User.objects.get(username=test_helper.user_information['username'])
+        unauthenticated_client = APIClient()
+        memory_route = reverse('memory_create_list', kwargs={'user_id': self.user.id})
+        response = unauthenticated_client.get(memory_route)
+        self.assertEquals(401, response.status_code)
+
     def test_cant_get_different_users_memories(self):
+        test_helper.create_memory(self.user.id)
+
         test_helper.create_user(test_helper.second_user_information)
         second_user = User.objects.get(username=test_helper.second_user_information['username'])
         second_user_client = test_helper.get_authenticated_client(second_user.username)
         first_user_memory_route = reverse('memory_create_list', kwargs={'user_id': self.user.id})
         response = second_user_client.get(first_user_memory_route)
-        print(response)
+
+        self.assertEquals(403, response.status_code)

@@ -17,7 +17,7 @@ class User(AbstractUser):
     pass
 
 """
-    Listens for users being created and creates an
+    Listens for users being created and creates an 
     auth token for them when they are.
 """
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

@@ -3,15 +3,19 @@ from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework import permissions
+from rest_framework import generics
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from .logic import Logic
 from .serializers import UserSerializer, MemorySerializer
+from .models import Memory
+from .permissions import IsOwner
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the memandi index.")
+"""
+Default permissions: permissions.IsOwner + IsAuthenticated
+    Note: user_id from the route is authorized, no others are.
+"""
 
 class UserList(APIView):
     authentication_classes = ()
@@ -26,11 +30,15 @@ class UserList(APIView):
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(user_serializer.validated_data, status=status.HTTP_201_CREATED)
 
-class MemoryList(APIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+class MemoryList(generics.GenericAPIView):
+    #TODO this isn't checking the user vs the requested memories
+
+    queryset = Memory.objects.all()
+    serializer_class = MemorySerializer
 
     def post(self, request, user_id, format='json'):
-        serializer = MemorySerializer(data=request.data)
+        data = _get_request_data_and_add_user_from_route(request)
+        serializer = MemorySerializer(data=data)
         if not serializer.is_valid():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         errors = Logic().create_memory(serializer)
@@ -41,3 +49,12 @@ class MemoryList(APIView):
     def get(self, request, user_id, format=None):
         memories = Logic().get_all_memories(user_id)
         return Response(memories, status=status.HTTP_200_OK)
+
+
+"""
+    Helpers
+"""
+def _get_request_data_and_add_user_from_route(request):
+    data = request.data
+    data['user'] = str(request.user.id)
+    return data

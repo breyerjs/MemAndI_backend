@@ -19,18 +19,17 @@ class TestHelper:
         }
 
         self.second_user_information = {
-            'username': 'alobar',
-            'email': 'jitterbug@perfume.com',
-            'password': 'panpanpan',
-            'first_name': 'Alobar',
-            'last_name': 'Pan'
+            'username': 'Haroun',
+            'email': 'sea@stories.com',
+            'password': 'rashid',
+            'first_name': 'Haroun',
+            'last_name': 'Sea'
         }
 
         self.memory_information = {
             'text': 'Did a lot of writing today',
             'pub_date': str(datetime.now()),
             'starred': False,
-            'user': None # added during usage
         }
 
     def create_user(self, data=None):
@@ -50,7 +49,7 @@ class TestHelper:
     def create_memory(self, user_id):
         memory_route = reverse('memory_create_list', kwargs={'user_id': user_id})
         body = self.memory_information
-        body['user'] = user_id
+        # body['user'] = user_id
         client = self.get_authenticated_client()
         return client.post(memory_route, data=body, format='json')
 
