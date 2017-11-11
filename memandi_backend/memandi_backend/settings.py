@@ -11,11 +11,13 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os, sys
-import dj_database_url
+from decouple import config
+from unipath import Path
+from dj_database_url import parse as db_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = BASE_DIR = Path(__file__).parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -76,26 +78,18 @@ WSGI_APPLICATION = 'memandi_backend.wsgi.application'
 ALLOWED_HOSTS = ['*']
 
 # Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-# if testing, use sqlite, otherwise use `DATABASE` env variable
-
-if 'test' in sys.argv:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-
-# if 'test' in sys.argv:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#         }
-#     }
-# else:
-#     DATABASES['default'] =  dj_database_url.config()
+# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+# See
+#   - https://simpleisbetterthancomplex.com/tutorial/2016/08/09/how-to-deploy-django-applications-on-heroku.html
+#   - https://pypi.python.org/pypi/python-decouple
+DATABASES = {
+    # Tries to use the db at DATABASE_URL; falls back to sqlite
+    'default': config(
+        'DATABASE_URL',
+        default='sqlite:///' + BASE_DIR.child('db.sqlite3'),
+        cast=db_url
+    )
+}
 
 
 REST_FRAMEWORK = {
