@@ -13,7 +13,7 @@ Default permissions: permissions.IsOwner + IsAuthenticated
     Do not send 'user' in the body of requests
 """
 
-def index():
+def index(request):
     return HttpResponse("Thanks for your interest in MemAndI!")
 
 class UserList(APIView):
