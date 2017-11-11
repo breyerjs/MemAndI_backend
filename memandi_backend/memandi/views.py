@@ -13,6 +13,9 @@ Default permissions: permissions.IsOwner + IsAuthenticated
     Do not send 'user' in the body of requests
 """
 
+def index():
+    return HttpResponse("Thanks for your interest in MemAndI!")
+
 class UserList(APIView):
     authentication_classes = ()
     permission_classes = ()
