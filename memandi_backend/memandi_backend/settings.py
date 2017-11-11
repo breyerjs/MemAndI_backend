@@ -73,6 +73,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'memandi_backend.wsgi.application'
 
+ALLOWED_HOSTS = ['*']
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
