@@ -77,6 +77,7 @@ WSGI_APPLICATION = 'memandi_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 # if testing, use sqlite, otherwise use `DATABASE` env variable
+
 if 'test' in sys.argv:
     DATABASES = {
         'default': {
@@ -84,8 +85,16 @@ if 'test' in sys.argv:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-else:
-    DATABASES['default'] =  dj_database_url.config()
+
+# if 'test' in sys.argv:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#         }
+#     }
+# else:
+#     DATABASES['default'] =  dj_database_url.config()
 
 
 REST_FRAMEWORK = {
