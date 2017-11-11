@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class IsOwner(permissions.BasePermission):
+class IsRouteUser(permissions.BasePermission):
     """
     Handles permissions for users.  The basic rules are
         - owner may GET, PUT, POST, DELETE
