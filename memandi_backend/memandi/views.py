@@ -22,8 +22,7 @@ class UserList(APIView):
 
     def post(self, request, format='json'):
         user_serializer = UserSerializer(data=request.data)
-        if not user_serializer.is_valid():
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        user_serializer.is_valid(raise_exception=True)
         errors = Logic().create_user(user_serializer)
         if errors is not None:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
@@ -33,8 +32,7 @@ class MemoryList(APIView):
     def post(self, request, user_id, format='json'):
         data = _get_request_data_and_add_user_from_route(request)
         serializer = MemorySerializer(data=data)
-        if not serializer.is_valid():
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
         errors = Logic().create_memory(serializer)
         if errors is not None:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
