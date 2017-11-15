@@ -16,6 +16,21 @@ Default permissions: permissions.IsOwner + IsAuthenticated
 def index(request):
     return HttpResponse("Thanks for your interest in MemAndI!")
 
+class Login(APIView):
+    authentication_classes = ()
+    permission_classes = ()
+
+    def post(self, request):
+        data = request.data
+        if None in [data.get('username'), data.get('password')]:
+            return Response("Both email and password are required", status=status.HTTP_400_BAD_REQUEST)
+        token = Logic().login_user(data)
+        # ie. the attempt to fetch the token is exceptional
+        if isinstance(token, dict):
+            return Response(token, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'token': str(token)}, status=status.HTTP_200_OK)
+
 class UserList(APIView):
     authentication_classes = ()
     permission_classes = ()

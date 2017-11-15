@@ -25,6 +25,28 @@ class TestSignup(TestCase):
         response2 = test_helper.create_user()
         self.assertEquals(response2.status_code, 400)
 
+class TestLogin(TestCase):
+    def setUp(self):
+        create_user_response = test_helper.create_user()
+        self.user = User.objects.get(username=test_helper.user_information['username'])
+
+    def test_can_log_in(self):
+        known_token = test_helper.get_user_token(self.user.username)
+        client = APIClient()
+        body = {
+            'username': self.user.username,
+            'password': self.user.password
+        }
+        response = client.post(test_helper.login_route, data=body, format='json')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.data['token'], str(known_token))
+
+    def test_wrong_password_cant_log_in(self):
+        pass
+
+    def test_wrong_username_cant_log_in(self):
+        pass
+
 class TestMemories(TestCase):
     def setUp(self):
         create_user_response = test_helper.create_user()

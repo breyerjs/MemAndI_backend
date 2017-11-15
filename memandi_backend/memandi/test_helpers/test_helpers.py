@@ -9,6 +9,7 @@ class TestHelper:
     def __init__(self):
         self.create_user_route = reverse('user_create_list')
         self.get_auth_token_route = reverse('get_auth_token')
+        self.login_route = reverse('login')
 
         self.user_information = {
             'username': 'alobar',
@@ -40,8 +41,11 @@ class TestHelper:
     # note: posting {username:username, password:password}
     # to the auth route should return the token, too
     # this can be sent like: http GET 127.0.0.1:8000/route 'Authorization: Token <token_value>'
+    def get_user_token(self, username='alobar'):
+        return Token.objects.get(user__username=username)
+
     def get_authenticated_client(self, username='alobar'):
-        token = Token.objects.get(user__username=username)
+        token = self.get_user_token(username)
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
         return client
