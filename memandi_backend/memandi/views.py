@@ -44,6 +44,7 @@ class UserList(APIView):
         return Response(user_serializer.validated_data, status=status.HTTP_201_CREATED)
 
 class MemoryList(APIView):
+
     def post(self, request, user_id, format='json'):
         data = _get_request_data_and_add_user_from_route(request)
         serializer = MemorySerializer(data=data)

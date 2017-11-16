@@ -8,7 +8,7 @@ from datetime import datetime
 class TestHelper:
     def __init__(self):
         self.create_user_route = reverse('user_create_list')
-        self.get_auth_token_route = reverse('get_auth_token')
+        # self.get_auth_token_route = reverse('get_auth_token')
         self.login_route = reverse('login')
 
         self.user_information = {
